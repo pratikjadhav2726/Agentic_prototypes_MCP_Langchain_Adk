@@ -5,6 +5,7 @@ import requests
 import dotenv
 import os
 import json
+import re  # Import regex module for parsing <think> tags
 from langchain_groq import ChatGroq
 from langchain.schema import HumanMessage
 
@@ -178,18 +179,42 @@ def main():
             with st.chat_message("user"):
                 st.markdown(prompt)
 
-            # Streaming response
+            # Thinking block
             with st.chat_message("assistant"):
                 response_placeholder = st.empty()
                 full_response = ""
-                with st.spinner("Generating response..."):
+                st.session_state.thinking = True  # Set thinking state
+                with st.spinner("Thinking..."):
                     for chunk in get_chatbot_response_stream(prompt):
                         full_response += chunk
-                        response_placeholder.markdown(full_response)  # Update the response incrementally
-                st.session_state.messages.append({"role": "assistant", "content": full_response})
-                st.rerun()
 
-        
+                # Parse the response to extract <think> content
+                think_match = re.search(r"<think>(.*?)</think>", full_response, re.DOTALL)
+                if think_match:
+                    think_content = think_match.group(1).strip()  # Extract content inside <think> tags
+                    actual_response = re.sub(r"<think>.*?</think>", "", full_response, flags=re.DOTALL).strip()  # Remove <think> tags
+                else:
+                    think_content = None
+                    actual_response = full_response.strip()
+
+                # Store the full response and <think> content in session state
+                st.session_state.latest_response = actual_response
+                st.session_state.think_content = think_content
+
+                # Display the "thinking" block with buttons
+                if st.session_state.thinking:
+                    if st.button("Reveal Thinking"):
+                        if st.session_state.think_content:
+                            st.markdown(f"**Thinking Process:** {st.session_state.think_content}")  # Show the <think> content
+                        else:
+                            st.warning("No thinking process available.")
+            
+                    st.session_state.thinking = False  # Update state to stop thinking
+                    response_placeholder.markdown(actual_response)  # Show the actual response
+                    st.session_state.messages.append({"role": "assistant", "content": actual_response})
+                    st.rerun()
+                else:
+                    response_placeholder.markdown("_The assistant is thinking..._")  # Placeholder text
 
 if __name__ == "__main__":
     main()
