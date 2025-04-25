@@ -36,7 +36,7 @@ async def main():
         agent = create_react_agent(model, client.get_tools())
         math_response = await agent.ainvoke({"messages": "what's (3 + 5) x 12?"})
         print(f"Agent response: {math_response}")
-        Browser_automation = await agent.ainvoke({"messages": "Find best hotels in Long Beach, CA"})
+        Browser_automation = await agent.ainvoke({"messages": "go to https://www.google.com'."})
         print(f"Agent response: {Browser_automation}")
 # Run the async main function
 asyncio.run(main())

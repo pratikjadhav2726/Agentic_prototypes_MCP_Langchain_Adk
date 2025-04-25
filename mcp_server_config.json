@@ -1,16 +1,5 @@
 {
     "mcpServers": {
-        "neo4j": {
-            "command": "uvx",
-            "args": [
-                "mcp-neo4j-memory==0.1.1"
-            ],
-            "env": {
-                "NEO4J_URL": "neo4j+s://xxxx.databases.neo4j.io",
-                "NEO4J_USERNAME": "<your-username>",
-                "NEO4J_PASSWORD": "<your-password>"
-            }
-        },
         "math": {
             "command": "python",
             "args": [
@@ -31,7 +20,19 @@
             "command": "npx",
             "args": [
                 "-y",
-                "@openbnb/mcp-server-airbnb"
+                "@openbnb/mcp-server-airbnb",
+                "--ignore-robots-txt"
+            ]
+        },
+        "fetch": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@smithery/cli@latest",
+                "run",
+                "@smithery-ai/fetch",
+                "--key",
+                "ba2d4989-2d87-41b5-9753-04c10f47adac"
             ]
         }
     }
