@@ -1,30 +1,38 @@
-{"mcpServers": {
-  "neo4j": {
-    "command": "uvx",
-    "args": [ "mcp-neo4j-memory==0.1.1" ],
-    "env": {
-      "NEO4J_URL": "neo4j+s://xxxx.databases.neo4j.io",
-      "NEO4J_USERNAME": "<your-username>",
-      "NEO4J_PASSWORD": "<your-password>"
-    }
-  },
-    "math": {
-        "command": "python",
-        "args": ["math_server.py"],
-        "transport": "stdio"
-    },
-    "playwright": {
-        "command": "npx",
-        "args": ["@playwright/mcp@latest"],
-        "env": {
-            "DISPLAY": ":1"
+{
+    "mcpServers": {
+        "neo4j": {
+            "command": "uvx",
+            "args": [
+                "mcp-neo4j-memory==0.1.1"
+            ],
+            "env": {
+                "NEO4J_URL": "neo4j+s://xxxx.databases.neo4j.io",
+                "NEO4J_USERNAME": "<your-username>",
+                "NEO4J_PASSWORD": "<your-password>"
+            }
+        },
+        "math": {
+            "command": "python",
+            "args": [
+                "math_server.py"
+            ],
+            "transport": "stdio"
+        },
+        "playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ],
+            "env": {
+                "DISPLAY": ":1"
+            }
+        },
+        "airbnb": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@openbnb/mcp-server-airbnb"
+            ]
         }
-    },
-    "airbnb": {
-        "command": "npx",
-        "args": [
-            "-y",
-            "@openbnb/mcp-server-airbnb"
-        ]
     }
-}}
+}
