@@ -5,11 +5,10 @@ from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
 # https://docs.litellm.ai/docs/providers/openrouter
-# model = LiteLlm(
-#     model="qwen-qwq-32b",
-#     provider="groq",
-#     api_key=os.getenv("GROQ_API_KEY"),
-# )
+model = LiteLlm(
+    model="groq/qwen-qwq-32b",
+    api_key=os.getenv("GROQ_API_KEY"),
+)
 
 
 def get_motivational_quote():
@@ -24,7 +23,7 @@ def get_motivational_quote():
 
 root_agent = Agent(
     name="Motivational_Agent",
-    model='gemini-2.0-flash-001',
+    model=model,
     description="Motivational quote agent",
     instruction="""
     You are a helpful assistant that provides motivational quotes. 
