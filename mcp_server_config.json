@@ -1,21 +1,6 @@
 {
     "mcpServers": {
-        "math": {
-            "command": "python",
-            "args": [
-                "math_server.py"
-            ],
-            "transport": "stdio"
-        },
-        "playwright": {
-            "command": "npx",
-            "args": [
-                "@playwright/mcp@latest"
-            ],
-            "env": {
-                "DISPLAY": ":1"
-            }
-        },
+        
         "airbnb": {
             "command": "npx",
             "args": [
@@ -34,6 +19,24 @@
                 "--key",
                 "ba2d4989-2d87-41b5-9753-04c10f47adac"
             ]
+        },
+        "tavily-mcp": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "tavily-mcp@0.1.2"
+            ],
+            "env": {
+                "TAVILY_API_KEY": "your-api-key-here"
+            }
+        },
+        "google-calender": {
+            "url": "http://localhost:5678/mcp/my-calendar/sse",
+            "transport": "sse"
+        },
+        "serp": {
+            "url": "http://localhost:5678/mcp/tavily/sse",
+            "transport": "sse"
         }
     }
 }
