@@ -37,6 +37,10 @@
         "serp": {
             "url": "http://localhost:5678/mcp/tavily/sse",
             "transport": "sse"
+        },
+        "slack": {
+            "url": "http://localhost:5678/mcp/slack/sse",
+            "transport": "sse"
         }
     }
 }

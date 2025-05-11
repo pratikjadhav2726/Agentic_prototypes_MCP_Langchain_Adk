@@ -34,7 +34,7 @@ async def main():
       config.get("mcpServers")
     )as client:
         agent = create_react_agent(model, client.get_tools())
-        Agent_response = await agent.ainvoke({"messages": "search the web for motivational quotes."})
+        Agent_response = await agent.ainvoke({"messages": "send message on slack channel as hi there."})
         print(f"Agent response: {Agent_response}")
         # Browser_automation = await agent.ainvoke({"messages": "go to https://www.google.com'."})
         # print(f"Agent response: {Browser_automation}")
