@@ -1,0 +1,6 @@
+httpx
+requests
+google-adk
+a2a-sdk
+uvicorn
+nest-asyncio
