@@ -24,7 +24,7 @@ from agents import (
 )
 from server_utils import create_agent_a2a_server # Assuming AgentSkill is also in server_utils or imported there
 from a2a.types import AgentSkill # Explicitly import AgentSkill if not re-exported by server_utils
-from langgraph_data_processor_server import create_langgraph_data_processor_server
+from langgraph_server_utils import create_data_processor_server
 
 # Apply nest_asyncio for environments like Jupyter, but also generally good for script-based asyncio with uvicorn threads
 nest_asyncio.apply()
@@ -98,9 +98,9 @@ def create_ra_agent_server():
     )
 
 def create_dp_agent_server():
-    """Create LangGraph-based Data Processing Agent server."""
+    """Create LangGraph-based Data Processing Agent server using langgraph_server_utils."""
     port = AGENT_PORTS["DataProcessingAgent"]
-    return create_langgraph_data_processor_server(HOST, port)
+    return create_data_processor_server(HOST, port)
 
 def create_rw_agent_server():
     port = AGENT_PORTS["ReportWriterAgent"]
@@ -169,7 +169,7 @@ def run_agent_server_in_background(create_server_func, port, name):
 # --- Main Execution Block ---
 if __name__ == "__main__":
     print("Starting AI Company Agent Servers...")
-    print("Note: Data Processing Agent now uses LangGraph for advanced workflows!")
+    print("Note: Data Processing Agent now uses LangGraph with langgraph_server_utils!")
 
     # Start all agent servers
     pm_thread = run_agent_server_in_background(create_pm_agent_server, AGENT_PORTS["ProjectManagerAgent"], "ProjectManagerAgent")
