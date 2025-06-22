@@ -20,11 +20,11 @@ from a2a_client import A2AToolClient
 from agents import (
     project_manager_agent,
     research_analyst_agent,
-    data_processing_agent,
     report_writer_agent
 )
 from server_utils import create_agent_a2a_server # Assuming AgentSkill is also in server_utils or imported there
 from a2a.types import AgentSkill # Explicitly import AgentSkill if not re-exported by server_utils
+from langgraph_data_processor_server import create_langgraph_data_processor_server
 
 # Apply nest_asyncio for environments like Jupyter, but also generally good for script-based asyncio with uvicorn threads
 nest_asyncio.apply()
@@ -98,25 +98,9 @@ def create_ra_agent_server():
     )
 
 def create_dp_agent_server():
+    """Create LangGraph-based Data Processing Agent server."""
     port = AGENT_PORTS["DataProcessingAgent"]
-    return create_agent_a2a_server(
-        agent=data_processing_agent,
-        name="Data Processing Agent",
-        description="Processes and analyzes data, extracts insights.",
-        skills=[
-            AgentSkill(
-                id="process_data",
-                name="Process Data",
-                description="Analyzes provided data to extract key information, trends, or summaries.",
-                tags=["data analysis", "text processing", "insight extraction"],
-                examples=["Extract company names from the provided text.", "Summarize these findings: [data]"]
-            )
-        ],
-        host=HOST,
-        port=port,
-        status_message="Data Processor is analyzing...",
-        artifact_name="processed_data_insights"
-    )
+    return create_langgraph_data_processor_server(HOST, port)
 
 def create_rw_agent_server():
     port = AGENT_PORTS["ReportWriterAgent"]
@@ -185,11 +169,12 @@ def run_agent_server_in_background(create_server_func, port, name):
 # --- Main Execution Block ---
 if __name__ == "__main__":
     print("Starting AI Company Agent Servers...")
+    print("Note: Data Processing Agent now uses LangGraph for advanced workflows!")
 
     # Start all agent servers
     pm_thread = run_agent_server_in_background(create_pm_agent_server, AGENT_PORTS["ProjectManagerAgent"], "ProjectManagerAgent")
     ra_thread = run_agent_server_in_background(create_ra_agent_server, AGENT_PORTS["ResearchAnalystAgent"], "ResearchAnalystAgent")
-    dp_thread = run_agent_server_in_background(create_dp_agent_server, AGENT_PORTS["DataProcessingAgent"], "DataProcessingAgent")
+    dp_thread = run_agent_server_in_background(create_dp_agent_server, AGENT_PORTS["DataProcessingAgent"], "LangGraphDataProcessorAgent")
     rw_thread = run_agent_server_in_background(create_rw_agent_server, AGENT_PORTS["ReportWriterAgent"], "ReportWriterAgent")
 
     print("\nWaiting for servers to initialize (e.g., 5-10 seconds)...")
@@ -198,43 +183,18 @@ if __name__ == "__main__":
     print("\nChecking if server threads are alive:")
     for agent_name, thread in [("PM", pm_thread), ("RA", ra_thread), ("DP", dp_thread), ("RW", rw_thread)]:
         if thread.is_alive():
-            print(f"- {agent_name} server thread is alive.")
+            print(f"✅ {agent_name} server thread is running")
         else:
-            print(f"- {agent_name} server thread is NOT alive. Check logs.")
+            print(f"❌ {agent_name} server thread is not running")
 
-    print("\nRegistering specialized agents with Project Manager's A2AToolClient...")
-    # The ProjectManagerAgent (via its A2A server) will use pm_a2a_client internally.
-    # For the PM to *discover* other agents, its pm_a2a_client needs to know their URLs.
-    pm_a2a_client.add_remote_agent(f"http://{HOST}:{AGENT_PORTS['ResearchAnalystAgent']}")
-    pm_a2a_client.add_remote_agent(f"http://{HOST}:{AGENT_PORTS['DataProcessingAgent']}")
-    pm_a2a_client.add_remote_agent(f"http://{HOST}:{AGENT_PORTS['ReportWriterAgent']}")
+    print("\nAll servers should now be running!")
+    print("You can test them using the test script or the chatbot UI.")
+    print("\nPress Ctrl+C to stop all servers.")
 
-    print("Remote agents registered with PM's client:")
-    # This list_remote_agents call is directly on the object, not via A2A call to PM yet.
-    # This is to confirm client-side registration.
-    # In a real scenario, the PM agent would call its own tool version of this.
-
-    # The list_remote_agents in the prompt expects a dictionary, but my A2AToolClient.list_remote_agents
-    # was modified to return a list of agent_data. I'll adjust the print statement here.
-    registered_agents_on_pm_client = pm_a2a_client.list_remote_agents()
-    print(f"PM's A2AToolClient knows about: {[(agent.get('name', 'Unknown Name'), agent.get('url', 'Unknown URL')) for agent in registered_agents_on_pm_client]}")
-
-
-    # Placeholder for actual testing (Step 7 of the main plan)
-    print("\n--- Main Orchestrator Setup Complete ---")
-    print("To test, you would now send a request to the ProjectManagerAgent's A2A endpoint, e.g.:")
-    print(f"http://{HOST}:{AGENT_PORTS['ProjectManagerAgent']}/")
-    print("Example test query for PM: 'Generate a report on the benefits of AI in customer service.'")
-
-    # Keep main thread alive to let background servers run
-    # In a real deployment, the servers would run indefinitely until stopped.
-    # For this script, we might want it to exit after some time or a manual stop.
     try:
+        # Keep the main thread alive
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print("\nShutting down main orchestrator and attempting to stop server threads...")
-    finally:
-        # Uvicorn servers started with daemon=True threads should exit when the main program exits.
-        # However, explicit cleanup might be needed in more complex scenarios.
-        print("Main orchestrator stopped.")
+        print("\nShutting down servers...")
+        # The daemon threads will be terminated when the main thread exits

@@ -1,0 +1,23 @@
+[project]
+name = "ai-company-workflow"
+version = "0.1.0"
+description = "Multi-agent AI system using A2A protocol with LangGraph integration"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx",
+    "requests",
+    "google-adk",
+    "a2a-sdk",
+    "uvicorn",
+    "nest-asyncio",
+    "python-dotenv",
+    "langchain-core",
+    "langchain-google-genai",
+    "langchain-openai",
+    "langgraph",
+    "pydantic",
+]
+
+[tool.uv]
+dev-dependencies = [] 
