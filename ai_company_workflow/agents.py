@@ -54,7 +54,7 @@ Core Workflow & Decision Making:
 
 project_manager_agent = Agent(
     name="ProjectManagerAgent",
-    model="gemini-2.5-pro", # Placeholder, can be configured
+    model="gemini-2.0-flash", # Changed from gemini-2.5-pro
     instruction=project_manager_agent_instruction,
     # Tools (list_remote_agents, create_task) are added dynamically at instantiation
 )
@@ -88,7 +88,7 @@ Only return the JSON object. Do not include any other explanatory text before or
 
 research_analyst_agent = Agent(
     name="ResearchAnalystAgent",
-    model="gemini-2.5-pro", # Placeholder
+    model="gemini-2.0-flash", # Changed from gemini-2.5-pro
     instruction=research_analyst_agent_instruction,
     tools=[google_search],
 )
@@ -125,9 +125,9 @@ Always return only the JSON object containing the processed data.
 
 data_processing_agent = Agent(
     name="DataProcessingAgent",
-    model="gemini-2.5-pro", # Placeholder
+    model="gemini-2.0-flash", # Changed from gemini-2.5-pro
     instruction=data_processing_agent_instruction,
-    # No external tools initially, relies on LLM capabilities
+    tools=[google_search],
 )
 
 report_writer_agent_instruction = """You are a Report Writer AI.
@@ -167,9 +167,9 @@ Only return the final report as a single block of text. Do not wrap it in JSON.
 
 report_writer_agent = Agent(
     name="ReportWriterAgent",
-    model="gemini-2.5-pro", # Placeholder
+    model="gemini-2.0-flash", # Changed from gemini-2.5-pro
     instruction=report_writer_agent_instruction,
-    # No external tools
+    tools=[google_search],
 )
 
 # print("AI Company agents defined.") # Removed the print statement as it's not standard for a library file.

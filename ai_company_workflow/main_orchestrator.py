@@ -3,16 +3,27 @@ import threading
 import time
 import nest_asyncio
 import uvicorn # uvicorn needs to be available
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Set up Google API configuration for Gemini
+os.environ['GOOGLE_GENAI_USE_VERTEXAI'] = 'FALSE'  # Use direct Gemini API
+api_key = os.getenv('GOOGLE_API_KEY')  # Your Gemini API key
+if api_key:
+    os.environ['GOOGLE_API_KEY'] = api_key
 
 # Imports from the new package
-from .a2a_client import A2AToolClient
-from .agents import (
+from a2a_client import A2AToolClient
+from agents import (
     project_manager_agent,
     research_analyst_agent,
     data_processing_agent,
     report_writer_agent
 )
-from .server_utils import create_agent_a2a_server # Assuming AgentSkill is also in server_utils or imported there
+from server_utils import create_agent_a2a_server # Assuming AgentSkill is also in server_utils or imported there
 from a2a.types import AgentSkill # Explicitly import AgentSkill if not re-exported by server_utils
 
 # Apply nest_asyncio for environments like Jupyter, but also generally good for script-based asyncio with uvicorn threads
