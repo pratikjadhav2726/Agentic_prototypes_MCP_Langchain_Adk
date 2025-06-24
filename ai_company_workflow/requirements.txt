@@ -1,0 +1,12 @@
+httpx
+requests
+google-adk
+a2a-sdk
+uvicorn
+nest-asyncio
+python-dotenv
+langchain-core
+langchain-google-genai
+langchain-openai
+langgraph
+pydantic
